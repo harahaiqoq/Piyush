@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBD Piyush | Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;800&family=Noto+Sans+Devanagari:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon: #00f2ff; --bg: #030303; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-x: hidden; }
+
+        .card {
+            background: rgba(255,255,255,0.02); backdrop-filter: blur(40px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 40px;
+            padding: 40px; text-align: center; width: 100%; max-width: 600px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+        }
+
+        .name { font-family: 'Syncopate', sans-serif; font-size: 2.2rem; color: var(--neon); margin-bottom: 20px; text-shadow: 0 0 15px rgba(0,242,255,0.5); }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .frame { height: 300px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.4s; }
+        .frame img { width: 100%; height: 100%; object-fit: cover; }
+        .frame:hover { border-color: var(--neon); transform: translateY(-5px); }
+
+        .quote { background: #111; border-left: 4px solid var(--neon); padding: 25px; border-radius: 15px; text-align: left; }
+        .hindi { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 1.1rem; line-height: 1.6; color: #ccc; }
+
+        .progress-top { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: var(--neon); box-shadow: 0 0 10px var(--neon); }
+
+        .harsh-signature {
+            margin-top: 40px; padding: 10px 25px; border-radius: 50px;
+            background: rgba(0,242,255,0.05); border: 1px solid rgba(0,242,255,0.1);
+            display: inline-block; font-size: 0.6rem; letter-spacing: 5px; font-weight: 800;
+            color: var(--neon); text-transform: uppercase;
+        }
+
+        #modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .m-box { background: #111; border: 1px solid var(--neon); padding: 40px; border-radius: 30px; text-align: center; width: 80%; max-width: 350px; }
+    </style>
+</head>
+<body onload="startMusic()">
+
+    <div id="topBar" class="progress-top"></div>
+
+    <div class="card">
+        <h1 class="name">Piyush Joshi 👑</h1>
+        <p style="color:var(--neon); letter-spacing:5px; font-size:0.7rem; margin-bottom:20px;">HAPPY BIRTHDAY</p>
+
+        <div class="grid">
+            <div class="frame" onclick="pop('Party Chahiye! 🥳')"><img src="piyush1.png"></div>
+            <div class="frame" onclick="pop('Chicken Ready Rakh! 🍗')"><img src="piyush2.png"></div>
+        </div>
+
+        <div class="quote">
+            <p class="hindi">
+                "कामयाबी तुम्हारे कदम चूमे,<br>
+                खुशियाँ तुम्हारे चारों ओर घूमे।<br>
+                जन्मदिन की बहुत बधाई पीयूष!" 🚩
+            </p>
+        </div>
+
+        <div class="harsh-signature">MADE BY HARSH SYSTEM</div>
+    </div>
+
+    <div id="modal"><div class="m-box"><h3 id="mTxt"></h3><button onclick="document.getElementById('modal').style.display='none'" style="background:var(--neon); border:none; padding:10px 20px; border-radius:50px; margin-top:20px; font-weight:800; cursor:pointer;">CHAL THIK HAI ❤️</button></div></div>
+
+    <audio id="song" loop> <source src="final_song.mp3" type="audio/mpeg"> </audio>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        const s = document.getElementById('song');
+        const b = document.getElementById('topBar');
+        function startMusic() { s.play(); }
+        s.ontimeupdate = () => { b.style.width = (s.currentTime/s.duration)*100 + "%"; };
+        function pop(m) {
+            document.getElementById('mTxt').innerText = m;
+            document.getElementById('modal').style.display = 'flex';
+            confetti({ particleCount: 100, scalar: 2, emoji: ['🍗', '🍻', '🥳'] });
+        }
+    </script>
+</body>
+</html>
