@@ -13,10 +13,10 @@
         .glass-container {
             background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(40px);
             border: 1px solid rgba(255, 255, 255, 0.1); padding: 50px; border-radius: 50px;
-            width: 90%; max-width: 500px; position: relative;
+            width: 90%; max-width: 500px; position: relative; transition: 1s;
         }
 
-        h2 { font-family: 'Syncopate', sans-serif; font-size: 0.6rem; letter-spacing: 10px; color: var(--accent); margin-bottom: 20px; opacity: 0.7; }
+        h2#reveal-head { font-family: 'Syncopate', sans-serif; font-size: 0.6rem; letter-spacing: 10px; color: var(--accent); margin-bottom: 20px; opacity: 0.7; }
         .timer { font-size: clamp(1.5rem, 6vw, 3rem); font-weight: 800; margin: 30px 0; background: linear-gradient(#fff, #444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .btn-pro {
@@ -24,7 +24,16 @@
             background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3);
             font-weight: 800; cursor: not-allowed; transition: 0.4s; letter-spacing: 2px;
         }
-        .btn-active { background: #fff; color: #000; cursor: pointer; opacity: 1; box-shadow: 0 10px 30px rgba(0,242,255,0.3); border: none; }
+        
+        /* Reveal ke baad ye class apply hogi */
+        .btn-active { 
+            background: #fff !important; 
+            color: #000 !important; 
+            cursor: pointer !important; 
+            opacity: 1 !important; 
+            box-shadow: 0 10px 30px rgba(0,242,255,0.3); 
+            border: none !important;
+        }
         
         .music-status { position: fixed; bottom: 30px; width: 200px; left: 50%; transform: translateX(-50%); }
         .progress-container { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 8px; overflow: hidden; }
@@ -34,14 +43,14 @@
         #welcome-gate { display: none; opacity: 0; transform: translateY(20px); transition: 1s; }
     </style>
 </head>
-<body onclick="playPreMusic()">
+<body onclick="playInitialMusic()">
 
     <div class="harsh-sig">MADE BY HARSH</div>
 
     <div id="countdown-screen" class="glass-container">
-        <h2>REVEAL ON 21 MARCH</h2>
+        <h2 id="reveal-head">REVEAL ON 21 MARCH</h2>
         <div class="timer" id="timer">00D 00H 00M 00S</div>
-        <button id="mainBtn" class="btn-pro" onclick="showWelcome()">LOCKED 🔒</button>
+        <button id="mainBtn" class="btn-pro">LOCKED 🔒</button>
     </div>
 
     <div id="welcome-gate" class="glass-container">
@@ -55,35 +64,92 @@
     </div>
 
     <audio id="preSong" loop> <source src="pre_song.mp3" type="audio/mpeg"> </audio>
+    <audio id="birthdaySong"> <source src="birthday_song.mp3" type="audio/mpeg"> </audio>
 
     <script>
-        let music = false;
-        const song = document.getElementById('preSong');
-        const progress = document.getElementById('progressBar');
+        let musicStarted = false;
+        let isRevealed = false;
+        const preSong = document.getElementById('preSong');
+        const bdaySong = document.getElementById('birthdaySong');
+        const progressBar = document.getElementById('progressBar');
+        const timerDisplay = document.getElementById('timer');
+        const mainBtn = document.getElementById('mainBtn');
+        const revealHead = document.getElementById('reveal-head');
 
-        function playPreMusic() { if(!music) { song.play(); music = true; } }
+        // Target: March 21, 2026 at 12:00:00 AM
+        const targetDate = new Date("March 21, 2026 00:00:00").getTime();
 
-        song.ontimeupdate = () => { progress.style.width = (song.currentTime/song.duration)*100 + "%"; };
+        // 1. Browser restriction ki wajah se pehla click music start karega
+        function playInitialMusic() {
+            if (!musicStarted && !isRevealed) {
+                preSong.play();
+                musicStarted = true;
+                updateProgress(preSong);
+            }
+        }
 
-        const target = new Date("March 21, 2026 00:00:00").getTime();
-        setInterval(() => {
-            const diff = target - new Date().getTime();
-            const d = Math.floor(diff/(1000*60*60*24)), h = Math.floor((diff%(1000*60*60*24))/(1000*60*60)), m = Math.floor((diff%(1000*60*60))/(1000*60)), s = Math.floor((diff%(1000*60))/1000);
-            document.getElementById("timer").innerHTML = `${d}D ${h}H ${m}M ${s}S`;
-            if (diff < 0) { document.getElementById("mainBtn").classList.add("btn-active"); document.getElementById("mainBtn").innerHTML = "UNLOCK 🔓"; }
+        // 2. Real-time Countdown logic
+        const countdownLoop = setInterval(() => {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+
+            if (diff > 0) {
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                timerDisplay.innerHTML = `${d}D ${h}H ${m}M ${s}S`;
+            } else {
+                // Countdown Finish!
+                clearInterval(countdownLoop);
+                if (!isRevealed) triggerReveal();
+            }
         }, 1000);
 
+        // 3. Switch Everything at Midnight
+        function triggerReveal() {
+            isRevealed = true;
+            
+            // Music Switch
+            preSong.pause();
+            preSong.currentTime = 0;
+            bdaySong.play();
+            updateProgress(bdaySong);
+
+            // UI Changes
+            timerDisplay.style.display = 'none';
+            revealHead.innerHTML = "HAPPY BIRTHDAY PIYUSH! 🎂";
+            revealHead.style.fontSize = "1.2rem";
+            revealHead.style.opacity = "1";
+
+            // Button Unlock
+            mainBtn.innerHTML = "OPEN SURPRISE ✨";
+            mainBtn.classList.add('btn-active');
+            mainBtn.setAttribute('onclick', 'showWelcome()');
+        }
+
+        // 4. Final Transition
         function showWelcome() {
-            if(document.getElementById("mainBtn").classList.contains("btn-active")) {
-                document.getElementById("countdown-screen").style.opacity = "0";
+            document.getElementById('countdown-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('countdown-screen').style.display = 'none';
+                const gate = document.getElementById('welcome-gate');
+                gate.style.display = 'block';
                 setTimeout(() => {
-                    document.getElementById("countdown-screen").style.display = "none";
-                    const gate = document.getElementById("welcome-gate");
-                    gate.style.display = "block";
-                    setTimeout(() => { gate.style.opacity = "1"; gate.style.transform = "translateY(0)"; }, 100);
-                }, 800);
-            }
+                    gate.style.opacity = '1';
+                    gate.style.transform = 'translateY(0)';
+                }, 50);
+            }, 800);
+        }
+
+        // Music Progress Bar Logic
+        function updateProgress(audio) {
+            audio.ontimeupdate = () => {
+                const pct = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = pct + '%';
+            };
         }
     </script>
 </body>
-</html>
+    </html>
+    
