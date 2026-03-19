@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBD Piyush | Pro</title>
+    <title>HBD Piyush | Pro System</title>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;800&family=Noto+Sans+Devanagari:wght@700&display=swap" rel="stylesheet">
     <style>
         :root { --neon: #00f2ff; --bg: #030303; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg); color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-x: hidden; }
+        body { background: var(--bg); color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-x: hidden; cursor: pointer; }
 
         .card {
             background: rgba(255,255,255,0.02); backdrop-filter: blur(40px);
@@ -27,7 +27,7 @@
         .quote { background: #111; border-left: 4px solid var(--neon); padding: 25px; border-radius: 15px; text-align: left; }
         .hindi { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 1.1rem; line-height: 1.6; color: #ccc; }
 
-        .progress-top { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: var(--neon); box-shadow: 0 0 10px var(--neon); }
+        .progress-top { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: var(--neon); box-shadow: 0 0 10px var(--neon); z-index: 9999; }
 
         .harsh-signature {
             margin-top: 40px; padding: 10px 25px; border-radius: 50px;
@@ -40,7 +40,7 @@
         .m-box { background: #111; border: 1px solid var(--neon); padding: 40px; border-radius: 30px; text-align: center; width: 80%; max-width: 350px; }
     </style>
 </head>
-<body onload="startMusic()">
+<body onclick="startMusic()">
 
     <div id="topBar" class="progress-top"></div>
 
@@ -49,8 +49,8 @@
         <p style="color:var(--neon); letter-spacing:5px; font-size:0.7rem; margin-bottom:20px;">HAPPY BIRTHDAY</p>
 
         <div class="grid">
-            <div class="frame" onclick="pop('Party Chahiye! 🥳')"><img src="piyush1.png"></div>
-            <div class="frame" onclick="pop('Chicken Ready Rakh! 🍗')"><img src="piyush2.png"></div>
+            <div class="frame" onclick="pop('Party Chahiye! 🥳')"><img src="piyush1.jpg"></div>
+            <div class="frame" onclick="pop('Bhai Chicken Ready Rakh! 🍗')"><img src="piyush2.jpg"></div>
         </div>
 
         <div class="quote">
@@ -64,20 +64,52 @@
         <div class="harsh-signature">MADE BY HARSH SYSTEM</div>
     </div>
 
-    <div id="modal"><div class="m-box"><h3 id="mTxt"></h3><button onclick="document.getElementById('modal').style.display='none'" style="background:var(--neon); border:none; padding:10px 20px; border-radius:50px; margin-top:20px; font-weight:800; cursor:pointer;">CHAL THIK HAI ❤️</button></div></div>
+    <div id="modal">
+        <div class="m-box">
+            <h3 id="mTxt" style="color: #fff; margin-bottom: 10px;"></h3>
+            <p style="color: var(--neon); font-size: 0.8rem; margin-bottom: 20px;">SYSTEM PAAD DENGE BHAI! 🔥</p>
+            <button onclick="document.getElementById('modal').style.display='none'" style="background:var(--neon); border:none; padding:10px 25px; border-radius:50px; font-weight:800; cursor:pointer; color: #000;">CHAL THIK HAI ❤️</button>
+        </div>
+    </div>
 
-    <audio id="song" loop> <source src="final_song.mp3" type="audio/mpeg"> </audio>
+    <audio id="song" loop> <source src="birthday_song.mp3" type="audio/mpeg"> </audio>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
     <script>
         const s = document.getElementById('song');
         const b = document.getElementById('topBar');
-        function startMusic() { s.play(); }
-        s.ontimeupdate = () => { b.style.width = (s.currentTime/s.duration)*100 + "%"; };
+
+        function startMusic() {
+            s.play().catch(() => {
+                console.log("Waiting for user click to play music...");
+            });
+        }
+
+        window.onload = () => {
+            startMusic();
+            // Confetti blast when page opens
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#00f2ff', '#ffffff', '#ff0000']
+            });
+        };
+
+        s.ontimeupdate = () => { 
+            b.style.width = (s.currentTime/s.duration)*100 + "%"; 
+        };
+
         function pop(m) {
             document.getElementById('mTxt').innerText = m;
             document.getElementById('modal').style.display = 'flex';
-            confetti({ particleCount: 100, scalar: 2, emoji: ['🍗', '🍻', '🥳'] });
+            // Emoji confetti on photo click
+            confetti({ 
+                particleCount: 100, 
+                scalar: 2, 
+                emoji: ['👑', '🔥', '🎂', '🥳', '🍗'] 
+            });
         }
     </script>
 </body>
